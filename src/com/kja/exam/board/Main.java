@@ -1,14 +1,15 @@
 package com.kja.exam.board;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    static void makeTestData(ArrayList<Article> articles) {
+    static void makeTestData(List<Article> articles) {
         // 테스트 데이터 3개 등록, 시작
         articles.add(new Article(1, "제목1", "내용1"));
-        articles.add(new Article(1, "제목2", "내용2"));
-        articles.add(new Article(1, "제목3", "내용3"));
+        articles.add(new Article(2, "제목2", "내용2"));
+        articles.add(new Article(3, "제목3", "내용3"));
     }
 
     public static void main(String[] args) {
@@ -18,11 +19,14 @@ public class Main {
         System.out.println("== 프로그램 시작 ==");
 
         int articlesLastId = 0;
-        Article lastArticle = null;
 
-        ArrayList<Article> articles = new ArrayList<Article>();
+        ArrayList<Article> articles = new ArrayList<>();
 
         makeTestData(articles);
+
+        if (articles.size() > 0) {
+            articlesLastId = articles.get(articles.size() - 1).id;
+        }
 
         while (true) {
             System.out.printf("명령) ");
@@ -37,18 +41,19 @@ public class Main {
                 System.out.println("번호 / 제목");
                 System.out.println("--------------------");
 
-                for (Article article : articles) {
+                for (int i = articles.size() - 1; i >= 0; i--) {
+                    Article article = articles.get(i);
                     System.out.printf("%d / %s\n", article.id, article.title);
                 }
 
             } else if (cmd.equals("/usr/article/detail")) {
 
-                if (lastArticle == null) {
+                if (articles.isEmpty()) {
                     System.out.println("게시물이 존재하지 않습니다.");
                     continue;
                 }
 
-                Article article = lastArticle;
+                Article article = articles.get(articles.size() - 1);
 
                 System.out.println("- 게시물 상세내용 -");
                 System.out.printf("번호 : %d\n", article.id);
@@ -66,7 +71,8 @@ public class Main {
                 articlesLastId = id;
 
                 Article article = new Article(id, title, body);
-                lastArticle = article;
+                articles.add(article);
+
                 System.out.println("생성된 게시물 객체 : " + article);
 
                 System.out.printf("%d번 게시물이 입력되었습니다.\n", article.id);
