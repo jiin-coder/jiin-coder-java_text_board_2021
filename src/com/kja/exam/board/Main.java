@@ -17,7 +17,6 @@ public class Main {
         System.out.println("== 프로그램 시작 ==");
 
         int articlesLastId = 0;
-
         ArrayList<Article> articles = new ArrayList<>();
 
         makeTestData(articles);
@@ -31,11 +30,11 @@ public class Main {
             String cmd = sc.nextLine();
 
             Rq rq = new Rq(cmd);
-
+            Map<String, String> params = rq.getParams();
 
             if (rq.getUrlPath().equals("exit")) {
                 break;
-            } else if (cmd.equals("/usr/article/list")) {
+            } else if (rq.getUrlPath().equals("/usr/article/list")) {
                 System.out.println("- 게시물 리스트 -");
                 System.out.println("--------------------");
                 System.out.println("번호 / 제목");
@@ -46,14 +45,30 @@ public class Main {
                     System.out.printf("%d / %s\n", article.id, article.title);
                 }
 
-            } else if (cmd.equals("/usr/article/detail")) {
+            } else if (rq.getUrlPath().equals("/usr/article/detail")) {
 
-                if (articles.isEmpty()) {
+                // /usr/article/detail?id=3 입력하면 id가 3인 페이지 노출
+
+                if (params.containsKey("id") == false) {
+                    System.out.println("id를 입력해주세요.");
+                    continue;
+                }
+
+                int id = 0;
+
+                try {
+                    id = Integer.parseInt(params.get("id"));
+                } catch (NumberFormatException e) {
+                    System.out.println("id를 정수형태로 입력해주세요.");
+                    continue;
+                }
+
+                if (id > articles.size()) {
                     System.out.println("게시물이 존재하지 않습니다.");
                     continue;
                 }
 
-                Article article = articles.get(articles.size() - 1);
+                Article article = articles.get(id - 1);
 
                 System.out.println("- 게시물 상세내용 -");
                 System.out.printf("번호 : %d\n", article.id);
@@ -72,7 +87,6 @@ public class Main {
 
                 Article article = new Article(id, title, body);
                 articles.add(article);
-
                 System.out.println("생성된 게시물 객체 : " + article);
 
                 System.out.printf("%d번 게시물이 입력되었습니다.\n", article.id);
