@@ -40,6 +40,8 @@ public class Main {
                 System.out.println("번호 / 제목");
                 System.out.println("--------------------");
 
+                List<Article> sortedArticles = articles;
+
                 boolean orderByIdDesc = true;
 
                 if (params.containsKey("orderBy") && params.get("orderBy").equals("idAsc")) {
@@ -47,14 +49,11 @@ public class Main {
                 }
 
                 if (orderByIdDesc) {
-                    for (int i = articles.size() - 1; i >= 0; i--) {
-                        Article article = articles.get(i);
-                        System.out.printf("%d / %s\n", article.id, article.title);
-                    }
-                } else {
-                    for (Article article : articles) {
-                        System.out.printf("%d / %s\n", article.id, article.title);
-                    }
+                    sortedArticles = Util.reverseList(sortedArticles);
+                }
+
+                for (Article article : sortedArticles) {
+                    System.out.printf("%d / %s\n", article.id, article.title);
                 }
 
             } else if (rq.getUrlPath().equals("/usr/article/detail")) {
@@ -154,6 +153,18 @@ class Rq {
 
 
 class Util {
+
+    // 이 함수는 원본리스트를 훼손하지 않고, 새 리스트를 생성
+    // 즉 정렬이 반대인 복사본리스트를 생성해 반환
+    public static <T> List<T> reverseList(List<T> list) {
+        List<T> reverse = new ArrayList<>(list.size());
+
+        for (int i = list.size() - 1; i >= 0; i--) {
+            reverse.add(list.get(i));
+        }
+        return reverse;
+    }
+
     static Map<String, String> getParamsFromUrl(String url) {
         Map<String, String> params = new HashMap<>();
         String[] urlBits = url.split("\\?", 2);
