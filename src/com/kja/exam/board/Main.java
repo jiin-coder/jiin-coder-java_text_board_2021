@@ -40,9 +40,21 @@ public class Main {
                 System.out.println("번호 / 제목");
                 System.out.println("--------------------");
 
-                for (int i = articles.size() - 1; i >= 0; i--) {
-                    Article article = articles.get(i);
-                    System.out.printf("%d / %s\n", article.id, article.title);
+                boolean orderByIdDesc = true;
+
+                if (params.containsKey("orderBy") && params.get("orderBy").equals("idAsc")) {
+                    orderByIdDesc = false;
+                }
+
+                if (orderByIdDesc) {
+                    for (int i = articles.size() - 1; i >= 0; i--) {
+                        Article article = articles.get(i);
+                        System.out.printf("%d / %s\n", article.id, article.title);
+                    }
+                } else {
+                    for (Article article : articles) {
+                        System.out.printf("%d / %s\n", article.id, article.title);
+                    }
                 }
 
             } else if (rq.getUrlPath().equals("/usr/article/detail")) {
